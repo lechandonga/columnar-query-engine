@@ -21,7 +21,6 @@ public class QueryEngine {
 
     private final DataStore store;
     private final long maxMemoryBytes;
-    private final Parser parser = new Parser();
     private final QueryValidator validator = new QueryValidator();
     private final QueryExecutor executor = new QueryExecutor();
 
@@ -43,7 +42,8 @@ public class QueryEngine {
     }
 
     public ResultSet execute(String sql) {
-        Query query = parser.parse(sql);
+        // Parser 持有解析游标状态，每次执行独立实例，保证并发查询互不干扰
+        Query query = new Parser().parse(sql);
         Snapshot snapshot = store.snapshot();
         ValidatedQuery validated = validator.validate(query, snapshot);
         return executor.execute(validated, snapshot, new MemoryTracker(maxMemoryBytes));

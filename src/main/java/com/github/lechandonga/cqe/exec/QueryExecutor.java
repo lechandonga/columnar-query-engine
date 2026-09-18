@@ -233,7 +233,9 @@ public class QueryExecutor {
                     }
                 }
                 if (!any) return null;
-                return floating ? doubleSum : longSum;
+                // 注意：不能写成三元式，double/long 会发生数值提升导致类型丢失
+                if (floating) return doubleSum;
+                return longSum;
             }
             case AVG -> {
                 int col = index.of(agg.arg());
