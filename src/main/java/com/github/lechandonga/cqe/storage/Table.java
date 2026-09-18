@@ -42,4 +42,8 @@ public class Table {
     public int columnCount() {
         return columns.size();
     }
+
+    public List<Column> columns() {
+        return columns;
+    }
 }
